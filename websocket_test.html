@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebSocket Alert Test</title>
+</head>
+<body>
+    <h2>Live Stock Alerts</h2>
+    <ul id="messages"></ul>
+
+    <script>
+        const ws = new WebSocket("ws://localhost:8000/ws/alerts");
+
+        ws.onopen = () => {
+            console.log("Connected to WebSocket server");
+        };
+
+        ws.onmessage = (event) => {
+            const li = document.createElement("li");
+            li.textContent = event.data;
+            document.getElementById("messages").appendChild(li);
+        };
+
+        ws.onerror = (error) => {
+            console.log("WebSocket error:", error);
+        };
+
+        ws.onclose = () => {
+            console.log("WebSocket connection closed");
+        };
+    </script>
+</body>
+</html>

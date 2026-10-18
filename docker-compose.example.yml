@@ -1,0 +1,27 @@
+# docker-compose.example.yml
+# Copy this file to docker-compose.yml and replace every your_... value
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: your_db_user_here
+      POSTGRES_PASSWORD: your_password_here
+      POSTGRES_DB: your_db_name_here
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql://your_db_user_here:your_password_here@db:5432/your_db_name_here
+      PYTHONBUFFERED: "1"
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:

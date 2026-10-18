@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inventory — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="app.js" defer></script>
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span class="brand-name">Inventory</span>
+      </div>
+
+      <nav class="nav">
+        <a href="#" class="nav-link active">Dashboard</a>
+        <a href="#" class="nav-link">Products</a>
+        <a href="#" class="nav-link" id="alerts-nav-link">Alerts <span class="nav-badge" id="alerts-badge">0</span></a>
+        <a href="#" class="nav-link" id="scan-nav-link">Scan</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="user-avatar">H</div>
+          <div>
+            <div class="user-name">Hathi</div>
+            <div class="user-role">Admin</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+
+      <header class="topbar">
+        <div class="search-box">
+          <span>⌕</span>
+          <input type="text" id="search-input" placeholder="Search products..." />
+        </div>
+        <div class="topbar-right">
+          <span class="live-dot"></span>
+          <span class="live-label">Live</span>
+        </div>
+      </header>
+
+      <main class="content">
+        <h1 class="page-title">Good morning, Hathi</h1>
+        <p class="page-subtitle">Here's what's happening with your inventory today</p>
+
+        <!-- STATS -->
+        <section class="stats-row">
+          <div class="stat-card">
+            <span class="stat-label">Total Products</span>
+            <span class="stat-value" id="stat-total-products">--</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Low Stock</span>
+            <span class="stat-value accent" id="stat-low-stock">--</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Inventory Value</span>
+            <span class="stat-value" id="stat-inventory-value">₹--</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Categories</span>
+            <span class="stat-value" id="stat-categories">--</span>
+          </div>
+        </section>
+
+        <!-- TABLE -->
+        <section class="table-card">
+          <div class="table-card-header">
+            <h2>Products</h2>
+            <div style="display:flex; gap:10px;">
+              <button class="btn-primary" id="scan-btn">Scan Product</button>
+              <button class="btn-primary" id="add-product-btn">+ Add Product</button>
+                <button class="btn-primary" id="orders-btn">Purchase Orders</button>
+            </div>
+          </div>
+
+          <table class="product-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="product-table-body">
+              <!-- Rows are inserted here by app.js at runtime. -->
+              <tr><td colspan="5" style="text-align:center; color:#85868C; padding:24px;">Loading products...</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ADD PRODUCT MODAL -->
+  <div class="modal-overlay" id="add-product-modal" style="display:none;">
+    <div class="modal">
+      <h2>Add Product</h2>
+      <form id="add-product-form">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="ap-name" required />
+        </div>
+        <div class="form-group">
+          <label>SKU</label>
+          <input type="text" id="ap-sku" required />
+        </div>
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="ap-category" required />
+        </div>
+        <div class="form-group">
+          <label>Price</label>
+          <input type="number" step="0.01" id="ap-price" required />
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" id="ap-quantity" required />
+        </div>
+        <div class="form-group">
+          <label>Min Buffer</label>
+          <input type="number" id="ap-min-buffer" value="10" />
+        </div>
+        <p class="form-error" id="ap-error" style="color:#DB4141; display:none;"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('add-product-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Add Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+<!-- ALERTS PANEL -->
+<div class="modal-overlay" id="alerts-modal" style="display:none;">
+  <div class="modal" style="width:420px; max-height:70vh; overflow-y:auto;">
+    <h2>Live Alerts</h2>
+    <div id="alerts-panel">
+      <p style="color:#85868C; text-align:center; padding:20px 0;">No alerts yet</p>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" onclick="closeModal('alerts-modal')">Close</button>
+    </div>
+  </div>
+</div>
+  <!-- SCAN PRODUCT MODAL -->
+  <div class="modal-overlay" id="scan-modal" style="display:none;">
+    <div class="modal">
+      <h2>Scan Product</h2>
+      <form id="scan-form">
+        <div class="form-group">
+          <label>SKU</label>
+          <input type="text" id="scan-sku" required />
+        </div>
+        <div class="form-group">
+          <label>Quantity</label>
+          <input type="number" id="scan-quantity" required />
+        </div>
+        <div class="form-group">
+          <label>Direction</label>
+          <select id="scan-direction">
+            <option value="in">In (restock)</option>
+            <option value="out">Out (sale/usage)</option>
+          </select>
+        </div>
+        <p class="form-error" id="scan-error" style="color:#DB4141; display:none;"></p>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" onclick="closeModal('scan-modal')">Cancel</button>
+          <button type="submit" class="btn-primary">Submit Scan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <!-- PURCHASE ORDERS / AGENT PIPELINE MODAL -->
+<div class="modal-overlay" id="orders-modal" style="display:none;">
+  <div class="modal" style="width:600px; max-height:75vh; overflow-y:auto;">
+    <h2>Purchase Orders (Agent Pipeline)</h2>
+    <button class="btn-secondary" id="run-agent-btn" style="margin-bottom:14px;">Run Forecasting Agent Now</button>
+    <div id="orders-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="btn-secondary" onclick="closeModal('orders-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

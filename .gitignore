@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Secrets - NEVER upload
+.env
+.env.*
+!.env.example
+
+# Databases and local data
+*.db
+*.sqlite3
+
+# Large ML model files
+*.pkl
+*.joblib
+
+# Editor / OS files
+.vscode/
+.idea/
+Thumbs.db
+
+# Logs
+*.log
+
+# Real compose file with secrets
+docker-compose.yml
